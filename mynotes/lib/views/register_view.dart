@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/firebase_options.dart';
 
 
 
@@ -32,21 +30,7 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
    
-    return Scaffold(
-      appBar: AppBar(
-      title: Text('Register'),
-      ), 
-      body: FutureBuilder(
-          future: Firebase.initializeApp(
-                  options: DefaultFirebaseOptions.currentPlatform,
-                  ),
-
-        builder: (context, snapshot)  {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              break;
-          }
-          return Column(
+   return Column(
           children: [
             TextField(
               controller: _email,
@@ -89,19 +73,11 @@ class _RegisterViewState extends State<RegisterView> {
                     print("Wpisz poprawny emial");
                     print(err.code);
                   }
-                }
-                
-              
+                }           
               },
               child: const Text('Register'),
             ),
           ],
         );
-        // default:
-        // return const Text('Loading');
-        },
-        
-      ),
-    );
+        }
   }
-}

@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/firebase_options.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -35,21 +33,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
    
-    return Scaffold(
-      appBar: AppBar(
-      title: Text('Login'),
-      ), 
-      body: FutureBuilder(
-          future: Firebase.initializeApp(
-                  options: DefaultFirebaseOptions.currentPlatform,
-                  ),
-
-        builder: (context, snapshot)  {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              break;
-          }
-          return Column(
+     return Column(
           children: [
             TextField(
               controller: _email,
@@ -79,6 +63,7 @@ class _LoginViewState extends State<LoginView> {
                   email: email, 
                   password: password,
                   );
+                  print(UserCredential);
                 } 
                 on FirebaseAuthException catch (err){
                   if (err.code =='user-not-found'){
@@ -88,22 +73,12 @@ class _LoginViewState extends State<LoginView> {
                     print('Złe hasło');
 
                   }
-
                 }
-                
-              
+
               },
               child: const Text('Login'),
             ),
           ],
         );
-        // default:
-        // return const Text('Loading');
-        },
-        
-      ),
-    );
-  }
-  }
-
- 
+        }
+}
