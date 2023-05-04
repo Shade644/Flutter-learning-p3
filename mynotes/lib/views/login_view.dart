@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer';
+import 'package:mynotes/constants/router.dart';
+import '../utilities/show_error.dart';
 
 
 class LoginView extends StatefulWidget {
@@ -66,23 +68,28 @@ class _LoginViewState extends State<LoginView> {
                     email: email, 
                     password: password,
                     );
-                   Navigator.of(context).pushNamedAndRemoveUntil('/notes/', (route) => false);
+                   Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
                   } 
                   on FirebaseAuthException catch (err){
                     if (err.code =='user-not-found'){
-                      log('Użytkownik nie istnieje');
+                      await showErrorDialog(context, 'Użytkownik nie istnieje');
                     }
                     else if(err.code == 'wrong-password'){
-                      log('Złe hasło');
-     
+                      await showErrorDialog(context,'Złe hasło');
                     }
+                    else {
+                       await showErrorDialog(context,'Error: ${err.code}');
+                    }
+                  }
+                  catch (err){
+                    await showErrorDialog(context, err.toString(),);
                   }
                 },
                 child: const Text('Login'),
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamedAndRemoveUntil('/register/', (Route <dynamic> route) => false);
+                  Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (Route <dynamic> route) => false);
                 },
                 child: const Text('Rejestracja'),
               )
