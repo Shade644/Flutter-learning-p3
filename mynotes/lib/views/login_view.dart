@@ -68,7 +68,13 @@ class _LoginViewState extends State<LoginView> {
                     email: email, 
                     password: password,
                     );
-                   Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
+                    final user = FirebaseAuth.instance.currentUser;
+                    if(user?.emailVerified ?? false){
+                      Navigator.of(context).pushNamedAndRemoveUntil(notesRoute, (route) => false);
+                    }
+                    else{
+                      Navigator.of(context).pushNamedAndRemoveUntil(verifyemailRoute, (route) => false);
+                    }
                   } 
                   on FirebaseAuthException catch (err){
                     if (err.code =='user-not-found'){
