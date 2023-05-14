@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer';
-
 import 'package:mynotes/constants/router.dart';
-
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_service.dart';
 import '../utilities/show_error.dart';
 
 
@@ -62,32 +60,26 @@ class _RegisterViewState extends State<RegisterView> {
                   final email = _email.text;
                   final password = _password.text;
                   try{
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                    await AuthService.firebase().createUser(
                     email: email, 
                     password: password,
                     );
-                    final user = FirebaseAuth.instance.currentUser;
-                    await user?.sendEmailVerification();
+                    final user = AuthService.firebase().currentUser;
+                    AuthService.firebase().sendEmailVerification;
                     Navigator.of(context).pushNamed(verifyemailRoute);
                   }
-                  on FirebaseAuthException catch (err){
-                    if (err.code == 'weak-password'){
-                        await showErrorDialog(context,'Słabe Hasło',);
-                    }
-                    else if (err.code == 'email-already-in-use'){
-                        await showErrorDialog(context,'Email jest w użyciu',);
-                    }
-                    else if (err.code == 'invalid-email'){
-                       await showErrorDialog(context,'Zły email',);
-                    }
-                    else {
-                      await showErrorDialog(context, 'Error: ${err.code}');
-                    }
-                  } 
-                    catch(err){
-                      await showErrorDialog(context, err.toString(),);
-                    }
-                            
+                  on WeekPasswordAuthException{
+                     await showErrorDialog(context,'Słabe Hasło',);
+                  }
+                  on EmailAlreadyinUseAuthException{
+                      await showErrorDialog(context,'Email jest w użyciu',);
+                  }
+                  on InvalidEmailAuthException{
+                     await showErrorDialog(context,'Zły email',);
+                  }
+                  on GenericAuthException{
+                     await showErrorDialog(context, 'Błąd rejestracji');
+                  }
                 },
                 child: const Text('Register'),
               ),
